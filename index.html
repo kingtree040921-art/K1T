@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小臭屁我最爱你啦 ❤️</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1a081f 0%, #3a1c40 50%, #1a081f 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        /* 流星背景 */
+        .stars {
+            position: absolute; width: 100%; height: 100%; z-index: 1;
+        }
+        /* 表白主卡片 */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px 30px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 10;
+            animation: fadeIn 2s ease-in-out;
+        }
+        /* 头像/爱心动画 */
+        .heart-icon {
+            font-size: 50px;
+            animation: heartbeat 1.2s infinite;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        /* 唯美打字机文本 */
+        .text-box {
+            color: #fff;
+            font-size: 18px;
+            line-height: 1.8;
+            min-height: 120px;
+            text-align: left;
+            margin-bottom: 25px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        /* 交互按钮 */
+        .btn {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            padding: 12px 35px;
+            color: white;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+            transition: 0.3s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        /* 飘落爱心 */
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 65, 108, 0.6);
+            pointer-events: none;
+            animation: floatUp linear forwards;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="starsContainer"></div>
+
+    <div class="card">
+        <div class="heart-icon">❤️</div>
+        <div class="text-box" id="typingText"></div>
+        <button class="btn" onclick="burstHearts()">点击解锁惊喜</button>
+    </div>
+
+    <audio id="bgm" loop src="https://music.163.com/song/media/outer/url?id=1815194121.mp3"></audio>
+
+    <script>
+        // 【修改这里】：在这里填入你的表白情话，用逗号隔开每句话
+        const lines = [
+            "哈喽啊小臭屁，",
+            "脑公想你啦，",
+            "脑公没有干别的事情，每天都在搞这些乱七八糟的",
+            "有的时候就没有看到你的信息，",
+            "但是脑公最爱你啦。✨"
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+        const textBox = document.getElementById('typingText');
+
+        function type() {
+            if (lineIndex < lines.length) {
+                if (charIndex < lines[lineIndex].length) {
+                    textBox.innerHTML += lines[lineIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 120); // 打字速度，数字越小越快
+                } else {
+                    textBox.innerHTML += '<br>';
+                    lineIndex++;
+                    charIndex = 0;
+                    setTimeout(type, 600); // 换行停顿时间
+                }
+            }
+        }
+
+        // 自动触发打字
+        window.onload = () => {
+            setTimeout(type, 1000);
+            // 自动制造背景飘星
+            setInterval(createGlobalHeart, 400);
+        };
+
+        // 按钮点击爆裂爱心和播放音乐
+        function burstHearts() {
+            const audio = document.getElementById('bgm');
+            audio.play().catch(() => console.log("等待交互播放音乐"));
+            
+            for(let i=0; i<30; i++) {
+                setTimeout(createGlobalHeart, i * 50);
+            }
+        }
+
+        function createGlobalHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = ['❤️','💖','💕','🌸'][Math.floor(Math.random()*4)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 15 + 15 + 'px';
+            
+            // 随机飘落速度
+            const duration = Math.random() * 3 + 3;
+            heart.style.animationDuration = duration + 's';
+            
+            document.getElementById('starsContainer').appendChild(heart);
+            setTimeout(() => heart.remove(), duration * 1000);
+        }
+    </script>
+</body>
+</html>
